@@ -13,7 +13,8 @@ Predict the **next trading day's closing price** of S&P 500 companies using Mach
 ---
 ## 🚀 Live Demo
 
-**🌐 Application:** https://stockvision-forecast.streamlit.app/
+- 🚀 **Live Demo:** https://stockvision-forecast.streamlit.app/
+- 📂 **GitHub Repository:** https://github.com/Shanmuka986/StockVision-Forecast
 
 ---
 
