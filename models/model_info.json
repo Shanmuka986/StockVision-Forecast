@@ -1,0 +1,7 @@
+{
+    "Project": "StockVision Forecast V2",
+    "Model": "Linear Regression",
+    "Target": "Next_Close",
+    "Number of Features": 28,
+    "Version": "2.0"
+}

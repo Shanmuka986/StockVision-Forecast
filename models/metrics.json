@@ -1,0 +1,7 @@
+{
+    "Model": "Linear Regression",
+    "MAE": 2.3434,
+    "RMSE": 5.973,
+    "MAPE": 0.0138,
+    "R2 Score": 0.9995
+}
