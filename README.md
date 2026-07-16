@@ -462,7 +462,7 @@ Explore the user interface of **StockVision Forecast V2**, featuring live stock 
 
 The Home page allows users to search for a company by name or ticker symbol and generate a prediction for the next trading day's closing price.
 
-![Home](screenshots/home.png)
+![Home](screenshots/Home.png)
 
 ---
 
@@ -478,7 +478,7 @@ Displays the generated prediction, including the current closing price, predicte
 
 Shows all predictions made by the application along with their verification status. Predictions are automatically updated after the target trading day using live market data.
 
-![Prediction History](screenshots/prediction_history.png)
+![Prediction History](screenshots/predictionHistory.png)
 
 ---
 
@@ -486,7 +486,7 @@ Shows all predictions made by the application along with their verification stat
 
 Displays complete prediction records including prediction date, target trading date, company, ticker symbol, and other stored information for historical tracking.
 
-![Prediction Records](screenshots/prediction_records.png)
+![Prediction Records](screenshots/predictionRecords.png)
 
 ---
 
@@ -494,7 +494,7 @@ Displays complete prediction records including prediction date, target trading d
 
 Provides the latest market information downloaded directly from Yahoo Finance, allowing users to inspect the most recent stock data used for predictions.
 
-![Live Market Data](screenshots/live_data.png)
+![Live Market Data](screenshots/LiveData.png)
 
 ---
 
@@ -502,7 +502,7 @@ Provides the latest market information downloaded directly from Yahoo Finance, a
 
 Provides an overview of the project, technologies used, machine learning workflow, and application features.
 
-![About](screenshots/about.png)
+![About](screenshots/About.png)
 
 ---
 # 🚀 Future Enhancements
