@@ -11,6 +11,11 @@
 Predict the **next trading day's closing price** of S&P 500 companies using Machine Learning, live Yahoo Finance data, technical indicators, and an interactive Streamlit dashboard.
 
 ---
+## 🚀 Live Demo
+
+**🌐 Application:** https://stockvision-forecast.streamlit.app/
+
+---
 
 ## 🚀 Project Highlights
 
