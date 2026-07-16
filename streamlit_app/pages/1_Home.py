@@ -93,7 +93,7 @@ with a single click.
 
 st.success(
 """
-🚀 **Placement Ready ML Project**
+
 
 ✔ Live Yahoo Finance
 &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;

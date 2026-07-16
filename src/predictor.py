@@ -22,7 +22,6 @@ def load_model():
         MODELS_DIR / "best_model.pkl"
     )
 
-
 # ==========================================================
 # Predict Next Closing Price
 # ==========================================================
@@ -35,25 +34,57 @@ def predict_stock(
     return complete prediction details.
     """
 
-    # Download live data
-    live_df = download_stock_data(
-        ticker=ticker
-    )
+    # ------------------------------------------------------
+    # Download Live Market Data
+    # ------------------------------------------------------
 
-    # Today's close
+    try:
+
+        live_df = download_stock_data(
+            ticker=ticker
+        )
+
+    except Exception as e:
+
+        message = str(e)
+
+        if (
+            "RateLimit" in message
+            or "Too Many Requests" in message
+        ):
+
+            raise RuntimeError(
+                "Yahoo Finance is temporarily busy due to rate limiting. Please wait a minute and try again."
+            )
+
+        raise RuntimeError(message)
+
+    # ------------------------------------------------------
+    # Today's Close
+    # ------------------------------------------------------
+
     today_close = float(
         live_df.iloc[-1]["Close"]
     )
 
-    # Prepare features
+    # ------------------------------------------------------
+    # Prepare Features
+    # ------------------------------------------------------
+
     X = prepare_live_features(
         live_df
     )
 
-    # Load model
+    # ------------------------------------------------------
+    # Load Model
+    # ------------------------------------------------------
+
     model = load_model()
 
+    # ------------------------------------------------------
     # Prediction
+    # ------------------------------------------------------
+
     predicted_close = float(
         model.predict(X)[0]
     )
@@ -84,7 +115,7 @@ def predict_stock(
         else "DOWN"
     )
 
-        # ------------------------------------------------------
+    # ------------------------------------------------------
     # Prediction Result
     # ------------------------------------------------------
 
@@ -111,7 +142,6 @@ def predict_stock(
     save_prediction(result)
 
     return result
-
 
 # ==========================================================
 # Main
