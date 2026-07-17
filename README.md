@@ -1,4 +1,4 @@
-# 📈 StockVision Forecast V2
+# 📈 StockVision Forecast V2.1
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
 ![Streamlit](https://img.shields.io/badge/Streamlit-App-red?logo=streamlit)
