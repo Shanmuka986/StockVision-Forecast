@@ -9,6 +9,7 @@ import streamlit as st
 from pathlib import Path
 import pandas as pd
 
+
 # ==========================================================
 # PROJECT ROOT
 # ==========================================================
@@ -32,7 +33,7 @@ if str(PROJECT_ROOT.parent) not in sys.path:
 
 from src.startup import initialize_app
 from streamlit_app.theme import render_theme_controls
-
+from src.database.prediction_db import get_prediction_history
 # ==========================================================
 # PAGE CONFIG
 # ==========================================================
@@ -392,31 +393,32 @@ st.divider()
 
 st.header("📌 Current Project Statistics")
 
-history_file = PROJECT_ROOT.parent / "reports" / "prediction_history.csv"
+history = get_prediction_history()
 
-if history_file.exists():
+if history:
 
-    history = pd.read_csv(history_file)
+    history = pd.DataFrame(history)
+
+    history.rename(
+        columns={
+            "prediction_status": "Prediction Status"
+        },
+        inplace=True
+    )
 
     total_predictions = len(history)
 
-    pending = 0
+    pending = len(
+        history[
+            history["Prediction Status"] == "Pending"
+        ]
+    )
 
-    verified = 0
-
-    if "Prediction Status" in history.columns:
-
-        pending = len(
-            history[
-                history["Prediction Status"] == "Pending"
-            ]
-        )
-
-        verified = len(
-            history[
-                history["Prediction Status"] == "Verified"
-            ]
-        )
+    verified = len(
+        history[
+            history["Prediction Status"] == "Verified"
+        ]
+    )
 
     c1, c2, c3 = st.columns(3)
 
@@ -468,12 +470,16 @@ Predict Next Trading Day
 Closing Price
           │
           ▼
-Store Prediction History
-(CSV)
+Store Prediction
+(PostgreSQL)
           │
           ▼
 Automatic Prediction
 Verification
+          │
+          ▼
+Update Prediction Status
+(PostgreSQL)
 """,
 language="text"
 )

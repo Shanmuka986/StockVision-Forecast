@@ -8,13 +8,20 @@ using Yahoo Finance closing prices.
 import pandas as pd
 import yfinance as yf
 
-from src.config import REPORTS_DIR
+from src.database.prediction_db import (
+    get_pending_predictions,
+    update_prediction,
+)
 
 # ==========================================================
 # History File
 # ==========================================================
 
-HISTORY_FILE = REPORTS_DIR / "prediction_history.csv"
+DOWNLOAD_BUFFER_DAYS = 3
+
+STATUS_PENDING = "Pending"
+
+STATUS_VERIFIED = "Verified"
 
 # ==========================================================
 # Verification Settings
@@ -45,24 +52,11 @@ def update_prediction_accuracy():
     # ------------------------------------------------------
     # Check History File
     # ------------------------------------------------------
-
-    if not HISTORY_FILE.exists():
-
-        print("Prediction history not found.")
-
+    history = get_pending_predictions()
+    if not history:
+        print("No pending predictions found.")
         return 0
-
-    # ------------------------------------------------------
-    # Load History
-    # ------------------------------------------------------
-
-    history = pd.read_csv(HISTORY_FILE)
-
-    if history.empty:
-
-        print("Prediction history is empty.")
-
-        return 0
+ 
 
     # ------------------------------------------------------
     # Current Date
@@ -83,17 +77,17 @@ def update_prediction_accuracy():
     # Check Every Prediction
     # ------------------------------------------------------
 
-    for index, row in history.iterrows():
+    for  row in history:
 
         # Skip already verified predictions
-        if row["Prediction Status"] != STATUS_PENDING:
+        if row["prediction_status"] != STATUS_PENDING:
 
             continue
 
-        ticker = str(row["Ticker"]).upper()
+        ticker = str(row["ticker"]).upper()
 
         target_date = pd.to_datetime(
-            row["Target Trading Date"]
+            row["target_trading_date"]
         ).normalize()
 
         print("-" * 60)
@@ -217,15 +211,10 @@ def update_prediction_accuracy():
             # Update Prediction History
             # --------------------------------------------------
 
-            history.at[
-                index,
-                "Actual Closing Price"
-            ] = actual_close
-
-            history.at[
-                index,
-                "Prediction Status"
-            ] = STATUS_VERIFIED
+            update_prediction(
+                prediction_id=row["prediction_id"],
+                actual_close=actual_close,
+            )
 
             updated += 1
 
@@ -249,13 +238,7 @@ def update_prediction_accuracy():
     # Save Updated History
     # ------------------------------------------------------
 
-    history.to_csv(
-
-        HISTORY_FILE,
-
-        index=False
-
-    )
+ 
 
     print("=" * 60)
     print("Prediction Verification Completed")

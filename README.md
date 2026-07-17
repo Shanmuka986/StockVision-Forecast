@@ -29,6 +29,20 @@ Predict the **next trading day's closing price** of S&P 500 companies using Mach
 - 🎨 Modern Multi-Page Streamlit Dashboard
 - ⚡ Smart Local Data Caching
 - 🏗️ Modular Production-Style Project Structure
+- 🗄️ PostgreSQL-backed Persistent Prediction Storage
+
+## 📊 Project Statistics
+
+| Metric | Value |
+|---------|-------|
+| Companies Supported | 472 |
+| Historical Records | 2.7M+ |
+| Machine Learning Model | Linear Regression |
+| Prediction Target | Next Trading Day Closing Price |
+| Database | PostgreSQL |
+| Frontend | Streamlit |
+| Live Market Data | Yahoo Finance |
+| Deployment | Streamlit Community Cloud |
 
 ---
 
@@ -40,6 +54,23 @@ The application downloads live market data, performs feature engineering, predic
 
 The project follows industry best practices by separating data preprocessing, feature engineering, model training, prediction, verification, and user interface into independent modules.
 
+---
+
+---
+# 💡 Why StockVision Forecast V2?
+
+Many stock prediction projects focus only on generating predictions. StockVision Forecast V2 goes a step further by implementing a complete production-style workflow.
+
+Key differentiators include:
+
+- Next trading day price forecasting
+- Live market data integration using Yahoo Finance
+- Automated feature engineering with technical indicators
+- Persistent PostgreSQL-based prediction storage
+- Automatic prediction verification using actual market data
+- Interactive analytics dashboard built with Streamlit
+
+The project demonstrates how machine learning models can be integrated into a real-world application with data persistence, verification, and user-friendly visualization.
 ---
 # ✨ Features
 
@@ -81,7 +112,7 @@ The prediction model uses multiple technical indicators, including:
 
 ## 📂 Prediction History
 
-Every prediction is automatically recorded with:
+Every prediction is automatically stored in PostgreSQL with:
 
 - Prediction Date
 - Target Trading Date
@@ -100,7 +131,7 @@ Unlike most ML stock prediction projects, StockVision automatically verifies pre
 The application:
 
 - Downloads the actual closing price
-- Updates prediction history automatically
+- Updates the corresponding PostgreSQL prediction record automatically
 - Calculates prediction completion
 - Marks predictions as **Verified**
 
@@ -129,7 +160,7 @@ Features include:
 # 🏗️ System Architecture
 
 ```text
-                    +----------------------+
+                                        +----------------------+
                     |    Streamlit UI      |
                     +----------+-----------+
                                |
@@ -156,12 +187,13 @@ Features include:
                                |
                                v
                     +----------------------+
-                    | Prediction History   |
+                    | PostgreSQL Database  |
                     +----------+-----------+
                                |
                                v
                     +----------------------+
-                    | Auto Verification    |
+                    | Prediction           |
+                    | Verification         |
                     +----------------------+
 ```
 
@@ -169,19 +201,47 @@ Features include:
 
 # 🛠️ Technology Stack
 
-| Category | Technologies |
-|----------|--------------|
-| **Programming Language** | Python |
-| **Machine Learning** | Scikit-Learn (Linear Regression) |
-| **Data Processing** | Pandas, NumPy |
-| **Technical Indicators** | TA Library |
-| **Visualization** | Plotly, Matplotlib, Seaborn |
-| **Live Market Data** | Yahoo Finance (`yfinance`) |
-| **Frontend** | Streamlit |
-| **Model Storage** | Joblib |
-| **Model Training** | Scikit-Learn |
-| **Deployment** | Streamlit Community Cloud |
+| Category             | Technologies                     |
+| -------------------- | -------------------------------- |
+| Programming Language | Python                           |
+| Machine Learning     | Scikit-Learn (Linear Regression) |
+| Data Processing      | Pandas, NumPy                    |
+| Database             | PostgreSQL                       |
+| Database Driver      | Psycopg                          |
+| Technical Indicators | TA Library                       |
+| Visualization        | Plotly, Matplotlib               |
+| Live Market Data     | Yahoo Finance                    |
+| Frontend             | Streamlit                        |
+| Model Storage        | Joblib                           |
+| Deployment           | Streamlit Community Cloud        |
 
+
+---
+# 🗄️ Database Design
+
+StockVision Forecast V2 uses PostgreSQL as the persistent storage layer for all predictions.
+
+Each generated prediction stores:
+
+- Prediction ID (UUID)
+- Company Name
+- Stock Ticker
+- Prediction Date
+- Target Trading Date
+- Today's Closing Price
+- Predicted Closing Price
+- Actual Closing Price
+- Prediction Error
+- Prediction Status
+- Created Timestamp
+- Updated Timestamp
+
+The database enables:
+
+- Persistent prediction history
+- Automatic verification updates
+- Fast querying and filtering
+- Scalable production deployment
 ---
 
 # 📂 Project Structure
@@ -201,10 +261,14 @@ StockVision-Forecast/
 │   └── metrics.json
 │
 ├── reports/
-│   ├── prediction_history.csv
-│   └── EDA Charts
+│   └── EDA Charts/
 │
 ├── src/
+│   ├── database/
+│   │   ├── connection.py
+│   │   ├── prediction_db.py
+│   │   └── __init__.py
+│   │
 │   ├── preprocessing.py
 │   ├── feature_engineering.py
 │   ├── training.py
@@ -212,10 +276,11 @@ StockVision-Forecast/
 │   ├── live_data.py
 │   ├── history.py
 │   ├── accuracy.py
-│   └── startup.py
+│   ├── startup.py
+│   └── __init__.py
 │
 ├── streamlit_app/
-│   ├── app.py
+│   ├── App.py
 │   ├── pages/
 │   └── assets/
 │
@@ -261,7 +326,21 @@ Automatic Verification
 ```
 
 ---
+---
+# 📈 Results
 
+The production model predicts the next trading day's closing price using technical indicators derived from historical and live market data.
+
+The application automatically:
+
+- Generates predictions
+- Stores prediction records in PostgreSQL
+- Verifies predictions after the target trading day
+- Calculates prediction error
+- Maintains a complete prediction history for performance tracking
+
+This continuous verification workflow enables transparent evaluation of model performance over time.
+---
 ## 📥 Data Collection
 
 - Historical S&P 500 stock dataset
@@ -335,7 +414,7 @@ Whenever a prediction is requested, the application:
 2. Calculates all required technical indicators
 3. Aligns features with the trained model
 4. Predicts the next trading day's closing price
-5. Saves prediction history
+5. Stores prediction in PostgreSQL
 6. Stores live market data locally
 
 ---
@@ -345,12 +424,26 @@ Whenever a prediction is requested, the application:
 After the target trading day has completed, the application automatically:
 
 - Downloads the actual closing price
-- Updates prediction history
+- Updates the PostgreSQL prediction record
 - Changes prediction status from **Pending** to **Verified**
 - Stores the verified closing price
 
 This creates a continuous prediction tracking system similar to production forecasting applications.
 
+# 📋 Prerequisites
+
+Before running the project, ensure you have the following installed:
+
+- Python 3.11 or later
+- PostgreSQL 14 or later
+- Git
+- pip (Python package manager)
+
+You will also need:
+
+- A trained model inside the `models/` directory
+- A PostgreSQL database with the required prediction table
+- Environment variables configured for database connectivity
 ---
 # ⚙️ Installation
 
@@ -390,6 +483,20 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Configure Environment Variables
+
+Create a `.env` file in the project root and configure your PostgreSQL connection.
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=stockvision
+DB_USER=your_username
+DB_PASSWORD=your_password
+```
+
+The application will automatically connect to PostgreSQL using these environment variables.
+
 ---
 
 # ▶️ Run the Application
@@ -402,11 +509,12 @@ streamlit run streamlit_app/app.py
 
 The application will automatically:
 
-- Initialize the project
+- Connect to the PostgreSQL database
+- Initialize the prediction storage system
 - Verify pending predictions
-- Load the trained model
-- Load cached live market data
-- Open the dashboard in your browser
+- Load the trained machine learning model
+- Download or load cached live market data
+- Launch the interactive Streamlit dashboard
 
 ---
 
@@ -420,9 +528,10 @@ Deployment requires:
 - `requirements.txt`
 - Trained model files inside the `models/` directory
 - Processed dataset
-- Prediction history file
+- Configured PostgreSQL database
+- Database environment variables
 
-No additional backend server is required.
+No additional backend server is required because the Streamlit application communicates directly with PostgreSQL.
 
 ---
 
@@ -435,19 +544,24 @@ User Selects Company
 Download Latest Market Data
           │
           ▼
-Feature Engineering
+  Feature Engineering
           │
           ▼
-Load Trained Model
+  Load Trained Model
           │
           ▼
 Predict Next Trading Day Close
           │
           ▼
-Store Prediction History
+  Store Prediction
+    (PostgreSQL)
           │
           ▼
 Automatic Verification
+          │
+          ▼
+Update Prediction Status
+(PostgreSQL)
 ```
 
 ---
@@ -475,7 +589,7 @@ The following features are planned for future versions of StockVision:
 - 📈 Candlestick Charts with Technical Indicators
 - 📰 Financial News Sentiment Analysis
 - 📧 Email Notifications for Predictions
-- ☁️ Cloud Database Integration
+- 📊 Interactive Performance Analytics Dashboard
 - 👤 User Authentication & Personalized Watchlists
 - 📱 Mobile Responsive Dashboard
 - 📊 Model Performance Comparison Dashboard

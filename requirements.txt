@@ -10,3 +10,6 @@ yfinance
 ta
 xgboost
 lightgbm
+supabase
+python-dotenv
+psycopg[binary]

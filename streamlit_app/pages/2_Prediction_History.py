@@ -23,7 +23,7 @@ if str(PROJECT_ROOT) not in sys.path:
 # Imports
 # ==========================================================
 
-from src.config import REPORTS_DIR
+from src.database.prediction_db import get_prediction_history
 from src.company_mapping import COMPANY_MAPPING
 from src.startup import initialize_app
 from streamlit_app.theme import render_theme_controls
@@ -104,9 +104,9 @@ st.divider()
 # Load History
 # ==========================================================
 
-history_file = REPORTS_DIR / "prediction_history.csv"
+history = get_prediction_history()
 
-if not history_file.exists():
+if not history:
 
     st.info(
         """
@@ -118,7 +118,21 @@ Go to the Home page and generate your first prediction.
 
     st.stop()
 
-history = pd.read_csv(history_file)
+history = pd.DataFrame(history)
+history.rename(
+    columns={
+        "prediction_id": "Prediction ID",
+        "company_name": "Company",
+        "ticker": "Ticker",
+        "prediction_date": "Prediction Date",
+        "target_trading_date": "Target Trading Date",
+        "today_close": "Today's Closing Price",
+        "predicted_close": "Tomorrow's Predicted Closing Price",
+        "actual_close": "Actual Closing Price",
+        "prediction_status": "Prediction Status",
+    },
+    inplace=True,
+)
 
 if history.empty:
 
@@ -136,9 +150,7 @@ Go to the Home page and generate your first prediction.
 # Company Names
 # ==========================================================
 
-history["Company"] = history["Ticker"].map(
-    COMPANY_MAPPING
-).fillna(
+history["Company"] = history["Company"].fillna(
     history["Ticker"]
 )
 
@@ -551,7 +563,7 @@ st.download_button(
 
     data=download_df.to_csv(index=False),
 
-    file_name="prediction_history.csv",
+    file_name="stockvision_prediction_history.csv",
 
     mime="text/csv",
 

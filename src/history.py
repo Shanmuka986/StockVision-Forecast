@@ -1,22 +1,19 @@
 """
 history.py
 
-Store prediction history for
-StockVision Forecast V2.
+Store prediction history in PostgreSQL
+for StockVision Forecast V2.
 """
 
 from datetime import datetime
+from uuid import uuid4
 
 import pandas as pd
 from pandas.tseries.offsets import BusinessDay
+from src.company_mapping import COMPANY_MAPPING
 
-from src.config import REPORTS_DIR
 
-# ==========================================================
-# History File
-# ==========================================================
-
-HISTORY_FILE = REPORTS_DIR / "prediction_history.csv"
+from src.database.prediction_db import save_prediction as db_save_prediction
 
 
 # ==========================================================
@@ -25,7 +22,7 @@ HISTORY_FILE = REPORTS_DIR / "prediction_history.csv"
 
 def save_prediction(result: dict):
     """
-    Save prediction history.
+    Save prediction history into PostgreSQL.
     """
 
     # ------------------------------------------------------
@@ -34,104 +31,38 @@ def save_prediction(result: dict):
 
     now = datetime.now()
 
+    prediction_date = now.date()
+
     target_date = (
         pd.Timestamp(now) + BusinessDay(1)
-    ).strftime("%Y-%m-%d")
-
-    # ------------------------------------------------------
-    # Create Record
-    # ------------------------------------------------------
-
-    record = {
-
-        "Prediction ID": None,
-
-        "Prediction Date": now.strftime(
-            "%Y-%m-%d %H:%M:%S"
-        ),
-
-        "Target Trading Date": target_date,
-
-        "Ticker": result["Ticker"],
-
-        "Today's Closing Price":
-        result["Today's Close"],
-
-        "Tomorrow's Predicted Closing Price":
-        result["Predicted Close"],
-
-        "Actual Closing Price": None,
-
-        "Prediction Status": "Pending"
-
-    }
-
-    # ------------------------------------------------------
-    # Load Existing History
-    # ------------------------------------------------------
-
-    if HISTORY_FILE.exists():
-
-        history = pd.read_csv(
-            HISTORY_FILE
-        )
-
-    else:
-
-        history = pd.DataFrame()
+    ).date()
 
     # ------------------------------------------------------
     # Prediction ID
     # ------------------------------------------------------
 
-    if history.empty:
-
-        record["Prediction ID"] = 1
-
-    else:
-
-        record["Prediction ID"] = (
-            int(history["Prediction ID"].max())
-            + 1
-        )
+    prediction_id = str(uuid4())[:8]
 
     # ------------------------------------------------------
-    # Append
+    # Save to Database
     # ------------------------------------------------------
 
-    history = pd.concat(
-
-        [
-
-            history,
-
-            pd.DataFrame([record])
-
-        ],
-
-        ignore_index=True
-
-    )
-
-    # ------------------------------------------------------
-    # Save
-    # ------------------------------------------------------
-
-    history.to_csv(
-
-        HISTORY_FILE,
-
-        index=False
-
+    db_save_prediction(
+        prediction_id=prediction_id,
+        prediction_date=prediction_date,
+        target_trading_date=target_date,
+        ticker=result["Ticker"],
+        company_name=COMPANY_MAPPING.get(
+            result["Ticker"],
+            result["Ticker"]
+        ),
+        today_close=result["Today's Close"],
+        predicted_close=result["Predicted Close"],
     )
 
     print()
-
     print("Prediction saved successfully.")
-
-    print(
-        f"History File : {HISTORY_FILE.name}"
-    )
+    print(f"Prediction ID : {prediction_id}")
 
 
 # ==========================================================
@@ -143,6 +74,8 @@ if __name__ == "__main__":
     sample = {
 
         "Ticker": "AAPL",
+
+        "Company Name": "Apple Inc.",
 
         "Today's Close": 315.32,
 
