@@ -160,7 +160,7 @@ Features include:
 # 🏗️ System Architecture
 
 ```text
-                                        +----------------------+
+                    +----------------------+
                     |    Streamlit UI      |
                     +----------+-----------+
                                |
