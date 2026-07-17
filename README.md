@@ -568,16 +568,55 @@ Update Prediction Status
 
 # 📸 Application Screenshots
 
-> Screenshots will be added after deployment.
+Explore the user interface of **StockVision Forecast V2**, featuring live stock forecasting, prediction tracking, historical records, and interactive dashboards.
 
-Recommended screenshots:
+---
 
-- Dashboard
-- Home Page
-- Prediction Result
-- Prediction History
-- Live Market Data
-- About Page
+## 🏠 Home
+
+The Home page allows users to search for a company by name or ticker symbol and generate a prediction for the next trading day's closing price.
+
+![Home](screenshots/Home.png)
+
+---
+
+## 📈 Prediction Result
+
+Displays the generated prediction, including the current closing price, predicted closing price, expected price change, expected return, and market direction.
+
+![Prediction](screenshots/prediction.png)
+
+---
+
+## 📜 Prediction History
+
+Shows all predictions made by the application along with their verification status. Predictions are automatically updated after the target trading day using live market data.
+
+![Prediction History](screenshots/predictionHistory.png)
+
+---
+
+## 📋 Prediction Records
+
+Displays complete prediction records including prediction date, target trading date, company, ticker symbol, and other stored information for historical tracking.
+
+![Prediction Records](screenshots/predictionRecords.png)
+
+---
+
+## 📊 Live Market Data
+
+Provides the latest market information downloaded directly from Yahoo Finance, allowing users to inspect the most recent stock data used for predictions.
+
+![Live Market Data](screenshots/LiveData.png)
+
+---
+
+## ℹ️ About
+
+Provides an overview of the project, technologies used, machine learning workflow, and application features.
+
+![About](screenshots/About.png)
 
 ---
 # 🚀 Future Enhancements
