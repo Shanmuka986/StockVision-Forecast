@@ -23,9 +23,10 @@ def get_connection():
     """Return PostgreSQL database connection."""
 
     return psycopg.connect(
-        host=get_secret("DB_HOST"),
-        port=get_secret("DB_PORT"),
-        dbname=get_secret("DB_NAME"),
-        user=get_secret("DB_USER"),
-        password=get_secret("DB_PASSWORD"),
-    )
+    host=get_secret("DB_HOST"),
+    port=get_secret("DB_PORT"),
+    dbname=get_secret("DB_NAME"),
+    user=get_secret("DB_USER"),
+    password=get_secret("DB_PASSWORD"),
+    sslmode="require",
+)
